@@ -1,15 +1,23 @@
-install.packages("rgdal")
-library(rgdal)
 
-install.packages("spatstat")
-library(spatstat)
+Open Data Toronto
 
-library(ggplot2)
-library(stringr)
+ESRI Shapefile - Boundaries of Toronto Neighborhoods
+www1.toronto.ca/wps/portal/contentonly?vgnextoid=04b489fe9c18b210VgnVCM1000003dd60f89RCRD&vgnextchannel=1a66e03bb8d1e310VgnVCM10000071d60f89RCRD
 
+Wellbeing Toronto - Environment Data
+http://www1.toronto.ca/wps/portal/contentonly?vgnextoid=67f6d05685a0c410VgnVCM10000071d60f89RCRD&vgnextchannel=1a66e03bb8d1e310VgnVCM10000071d60f89RCRD
+
+Notes on Spatial Data Operation in R - Frank Davenport
 https://dl.dropboxusercontent.com/u/9577903/broomspatial.pdf
 
 # Date accessed: July 7, 2015
+
+
+library(rgdal)
+library(spatstat)
+library(ggplot2)
+library(stringr)
+
 
 wd <- getwd()
 download.file()
@@ -35,8 +43,6 @@ ogrInfo(".", "NEIGHBORHOODS_WGS84")
 #     2 SYSTEM    4     80   String
 
 # read in shapefiles
-centroids.rg <- readOGR(".", "NEIGHBORHOODS_WGS84")
-# rivers.rg <- readOGR(".", "NEIGHBORHOODS_WGS84")
 neighborhoods.rg <- readOGR(".", "NEIGHBORHOODS_WGS84")
 
 # note that readOGR will read the .prj file if it exists
@@ -45,33 +51,24 @@ print(proj4string(neighborhoods.rg))
 
 # generate a simple map showing all three layers
 plot(neighborhoods.rg, axes=TRUE, border="gray")
-points(centroids.rg, pch=20, cex=0.8)
-lines(rivers.rg, col="blue", lwd=2.0)
-
-plot(neighborhoods.rg, neighborhoods.rg@data$AREA_NAME)
 
 
+# the bounding box around the Toronto dataset
+# win <- bbox(neighborhoods.rg)
+# win
 
-win <- bbox(neighborhoods.rg)
-win
-#the bounding box around the Kenya dataset
+# win <- as.vector(win)
+# t(win)
 
-win <- as.vector(win)
-t(win)
-
-dran <-runifpoint(100, win = as.vector(t(bbox(neighborhoods.rg))))
+# dran <-runifpoint(100, win = as.vector(t(bbox(neighborhoods.rg))))
 #create 100 random points
-plot(neighborhoods.rg, axes=TRUE, border="gray")
-points(dran)
 
-dp <- as.data.frame(dran)
+# plot(neighborhoods.rg, axes=TRUE, border="gray")
+# points(dran)
+
+# dp <- as.data.frame(dran)
 #This creates a simple data frame with 2 colunms, x and y
-head(dp)
-
-
-# write out a new shapefile (including .prj component)
-writeOGR(counties.rg, ".", "counties-rgdal", driver="ESRI Shapefile")
-
+# head(dp)
 
 
 # Read in environmental data
@@ -79,30 +76,38 @@ environment <- read.csv("E:/Users/Kie/OneDrive/DataAnalytics/Personal Projects/t
          header = TRUE, 
          stringsAsFactors = FALSE)
 
+# create consistent column names for merging
 names(environment)[2] <- "id"
+
+# Ensure id's have initial 00's in same format as .shp file
 environment$id <- as.factor(str_pad(environment$id, 3, pad = "0"))
 
-#Extract data from shape file
+
 d <- environment
-d2 <- neighborhoods.rg@data$id
+d2 <- neighborhoods.rg@data$id #Extract data from shape file
 # d3 <- merge(d, d2)
 # head(d3)
 
 # Join our csv to our SHapefile
 
+# Change row names to ids
 row.names(d) <- d$id
-unique(d$id)
-unique(neighborhoods.rg$AREA_S_CD)
+# unique(d$id)
+# unique(neighborhoods.rg$AREA_S_CD)
+
+# Do the same for .shp
 row.names(neighborhoods.rg) <- as.character(neighborhoods.rg$AREA_S_CD)
+
+# We need to reorder the rownames for merging
 neighborhoods.rg <- neighborhoods.rg[order(neighborhoods.rg$AREA_S_CD), ]
-ds1 <-spCbind(neighborhoods.rg, d)
+
+# Binding
+ds1 <- spCbind(neighborhoods.rg, d)
 head(neighborhoods.rg@data)
 
 # Change dataset into ggplot usable format
 
 fort <- fortify(neighborhoods.rg)
-fort$id <- as.integer(fort$AREA_S_CD)
-fort$id <- fort$id + 1
 head(fort)
 
 # Create the plot
@@ -119,7 +124,7 @@ xlab("Basic Map with Default Elements")
 p1 <- p1 + scale_fill_gradient (name ="Green \nSpace",
                                 low ="lightgoldenrod", 
                                 high = "forestgreen")  #to set break points, enter in breaks=c(...,..)
-# The \n in Population \nChange'indicates a carriage return
+# The \n in Green Space \nChange'indicates a carriage return
 p1 + xlab( "We Changed the Color Scale and Gave the Legend a Proper Name")
 
 # -----Get Rid of the Background-----
@@ -142,6 +147,7 @@ cent$Neighborhood <- neighborhoods.rg$AREA_NAME
 cent$id <- neighborhoods.rg$AREA_S_CD
 head(cent)
 
+# Merge centroids with Environment data so we can draw upon infor for labels
 envlab <- merge(cent,d)
 
 p1 <- p1 + geom_text(data = cent,aes(V1, V2, label = Neighborhood), size = 2.5, vjust = 1)
@@ -149,9 +155,19 @@ p1 <- p1 + geom_text(data = envlab,
                 aes(V1, V2, label = paste("(", round(Green.Spaces,2), ")", sep = "")),
                     size = 2.5,
                     vjust = 2)
-p1 + ggtitle("Green Space in Toronto (Squared Km)") + 
+torontoGreenSpace <- p1 + ggtitle("Green Space in Toronto (Squared Km)") + 
   xlab("Longitude") +
   ylab("Latitude")
+
+
+
+# write out a new shapefile (including .prj component)
+# writeOGR(torontoGreenSpace, ".", "torontoGreenSpace", driver="ESRI Shapefile")
+
+png("./torontoGreenSpace.png", width=2000, 
+    height=2000)
+plot(torontoGreenSpace)
+dev.off()
 
 # THINGS TO DO
 # REMOVE NUMBERS FROM AREA NAME
