@@ -138,8 +138,11 @@ bTics <- theme(axis.text = element_blank(),
               axis.ticks = element_blank())
 
 p1 <- p1 + bTics + bGrid + bBack
-p1 + xlab("We got rid of all the unneccessary background material")
 
+torontoGreenSpace <- p1 + 
+   ggtitle("Green Space in Toronto (Squared Km)") + 
+   xlab("Longitude") +
+   ylab("Latitude")
 
 # For polygon labels, we will need to calc centroids
 cent <- as.data.frame(coordinates(neighborhoods.rg))
@@ -148,24 +151,24 @@ cent$id <- neighborhoods.rg$AREA_S_CD
 head(cent)
 
 # Merge centroids with Environment data so we can draw upon infor for labels
-envlab <- merge(cent,d)
+# envlab <- merge(cent,d)
 
-p1 <- p1 + geom_text(data = cent,aes(V1, V2, label = Neighborhood), size = 2.5, vjust = 1)
-p1 <- p1 + geom_text(data = envlab, 
-                aes(V1, V2, label = paste("(", round(Green.Spaces,2), ")", sep = "")),
-                    size = 2.5,
-                    vjust = 2)
-torontoGreenSpace <- p1 + ggtitle("Green Space in Toronto (Squared Km)") + 
-  xlab("Longitude") +
-  ylab("Latitude")
+# p1 <- p1 + geom_text(data = cent,aes(V1, V2, label = Neighborhood), size = 2.5, vjust = 1)
+# p1 <- p1 + geom_text(data = envlab, 
+#                 aes(V1, V2, label = paste("(", round(Green.Spaces,2), ")", sep = "")),
+#                     size = 2.5,
+#                     vjust = 2)
+# torontoGreenSpace <- p1 + ggtitle("Green Space in Toronto (Squared Km)") + 
+#   xlab("Longitude") +
+#   ylab("Latitude")
 
 
 
 # write out a new shapefile (including .prj component)
 # writeOGR(torontoGreenSpace, ".", "torontoGreenSpace", driver="ESRI Shapefile")
 
-png("./torontoGreenSpace.png", width=2000, 
-    height=2000)
+png("./torontoGreenSpace.png", width=750, 
+    height=750)
 plot(torontoGreenSpace)
 dev.off()
 
