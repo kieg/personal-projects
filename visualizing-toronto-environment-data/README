@@ -1,0 +1,8 @@
+Visualizing Open Data Toronto's Environmental Data
+
+The goal is to create a graphical representation of Toronto which can be used as a template to display data regarding Toronto's neghborhoods. 
+
+environment-toronto.R - contains the script to generate the map conatined within torontoGreenSpace.png
+NEIGHBORHOODS_WGS84 - conatin the geographical data needed to recreate a map of Toronto. Specifically, I use the ESRI .shp file. 
+WB-Environment - contains the environmental data from Open Data Toronto
+torontoGreenSpace.opng - the ouput map of Toronto
