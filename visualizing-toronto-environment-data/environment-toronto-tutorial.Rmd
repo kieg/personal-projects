@@ -1,6 +1,6 @@
 ---
 title: "Visualizing the Number of Polluting Facilities in Toronto Neighborhoods"
-output: pdf_document
+output: html_document
 ---
   
     
@@ -74,10 +74,11 @@ Let's take a look at the basic structure of Toronto's neighborhoods which we wil
 plot(neighborhoods.rg, axes=TRUE, border="gray")
 ```
 
-Now that we have polygons to work with, let's start to fill it in with our data.
-  
+
   
 #### Load Environmental Data
+
+Now that we have polygons to work with, let's start to fill it in with our data.
 
 This data has also been taken from Open Data Toronto's great Data Catalogue. Specifically the **Wellbeing Toronto - Environment** dataset may be downloaded from the following link: [Wellbeing Toronto - Environment](http://www1.toronto.ca/wps/portal/contentonly?vgnextoid=67f6d05685a0c410VgnVCM10000071d60f89RCRD&vgnextchannel=74a6e03bb8d1e310VgnVCM10000071d60f89RCRD)
 
@@ -102,7 +103,7 @@ environment_2011$id <- as.factor(str_pad(environment_2011$id, 3, pad = "0"))
 
 ```
   
-  
+    
 #### Joining the datasets.
 
 ```{r}
@@ -122,7 +123,7 @@ ds2011 <- spCbind(neighborhoods.rg, environment_2011)
 head(neighborhoods.rg@data)
 ```
   
-  
+   
 #### Transform the data
 
 The fortify function transforms the object into a dataframe that is useful for plotting. 
