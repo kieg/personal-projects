@@ -7,7 +7,7 @@ Notable Files Contained within repository:
 
  Data Sources:
   neighborhoods_planning_areas_wgs84 - contains the geographical data needed to recreate a map of Toronto. Specifically, I use the ESRI NEIGHBORHOODS_WGS84.shp file. 
-  WB-Environment - contains the environmental data from Open Data Toronto
+  WB-Environment - contains the environmental data from Open Data Toronto.
 
  Script:
   environment-toronto-tutorial.RMD - script to reproduce output contained in torontoPollutingFacilities.png
