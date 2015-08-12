@@ -1,10 +1,15 @@
+----------------------------------------------------
 Visualizing Open Data Toronto's Environmental Data
+----------------------------------------------------
 
+Exercise Goal
+--------------
 The goal is to create a graphical representation of Toronto which can be used as a template to display data regarding Toronto's neighborhoods. 
-In this case, the visualization will depict the Number of Polluting Facilities as of 2008 in each of Toronto's neighborhoods.
+The template visualization will depict the Number of Polluting Facilities as of 2008 in each of Toronto's neighborhoods.
 
-Notable Files Contained within repository: 
 
+Files Contained 
+----------------
  Data Sources:
   neighborhoods_planning_areas_wgs84 - contains the geographical data needed to recreate a map of Toronto. Specifically, I use the ESRI NEIGHBORHOODS_WGS84.shp file. 
   WB-Environment - contains the environmental data from Open Data Toronto.
