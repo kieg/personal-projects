@@ -1,0 +1,17 @@
+# Packages #
+############
+
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Specific Files #
+############
+
+visualizing-toronto-environment-data\environment-toronto.R
+visualizing-toronto-environment-data\environment-toronto-wip.R
